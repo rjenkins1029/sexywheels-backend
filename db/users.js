@@ -40,22 +40,26 @@ const createUser = async ({
     throw error;
   }
 };
-const getUser = async ({ username, password }) => {
-  try {
-    const user = await getUserByUsername(username);
+async function getUser({ 
+  email,
+  password
+}) {
+  try{
+    const user = await getUserByEmail(email);
     const hashedPassword = user.password;
-    const matchingPasswords = await bcrypt.compare(password, hashedPassword);
-
-    if (matchingPasswords) {
-      const userResult = (({ id, username }) => ({ id, username }))(user);
-      return userResult;
+    
+    let passwordsMatch = await bcrypt.compare(password, hashedPassword) 
+      if (passwordsMatch) {
+        delete user.password;
+        const userWithData = await attachUserData(user);
+        return userWithData;
+      } else {
+        return false;
     }
-    return user;
   } catch (error) {
-    console.error(error);
-    throw error;
+    console.error(error)
   }
-};
+}
 
 async function getResetUserById(userId) {
   try{
