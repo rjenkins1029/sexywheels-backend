@@ -40,7 +40,26 @@ const createUser = async ({
     throw error;
   }
 };
-
+async function getUser({ 
+  email,
+  password
+}) {
+  try{
+    const user = await getUserByEmail(email);
+    const hashedPassword = user.password;
+    
+    let passwordsMatch = await bcrypt.compare(password, hashedPassword) 
+      if (passwordsMatch) {
+        delete user.password;
+        const userWithData = await attachUserData(user);
+        return userWithData;
+      } else {
+        return false;
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
 const getAllUsers = async () => {
   try {
     const { rows: users } = await client.query(`
