@@ -9,7 +9,9 @@ const {
   getUserById,
   updateUser,
   deleteUser,
-  getUser
+  getUser,
+  getResetUserById,
+  getInactiveUserById
 } = require('../db/users.js');
 const { checkAuthorization } = require("./utils");
 usersRouter.post('/login', async (req, res, next) => {
