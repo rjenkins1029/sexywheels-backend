@@ -40,26 +40,23 @@ const createUser = async ({
     throw error;
   }
 };
-async function getUser({ 
-  email,
-  password
-}) {
-  try{
-    const user = await getUserByEmail(email);
+const getUser = async ({ username, password }) => {
+  try {
+    const user = await getUserByUsername(username);
     const hashedPassword = user.password;
-    
-    let passwordsMatch = await bcrypt.compare(password, hashedPassword) 
-      if (passwordsMatch) {
-        delete user.password;
-        const userWithData = await attachUserData(user);
-        return userWithData;
-      } else {
-        return false;
+    const matchingPasswords = await bcrypt.compare(password, hashedPassword);
+
+    if (matchingPasswords) {
+      const userResult = (({ id, username }) => ({ id, username }))(user);
+      return userResult;
     }
+    return user;
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    throw error;
   }
-}
+};
+
 async function getResetUserById(userId) {
   try{
       const { rows: [ user ] } = await client.query(`
@@ -119,22 +116,6 @@ const updateUser = async (id, fields = {}) => {
   }
 };
 
-const getUser = async ({ username, password }) => {
-  try {
-    const user = await getUserByUsername(username);
-    const hashedPassword = user.password;
-    const matchingPasswords = await bcrypt.compare(password, hashedPassword);
-
-    if (matchingPasswords) {
-      const userResult = (({ id, username }) => ({ id, username }))(user);
-      return userResult;
-    }
-    return user;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
 
 const getUserById = async userId => {
   try {
