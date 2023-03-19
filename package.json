@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+"
+    "url": "git+https://github.com/rjenkins1029/sexywheels-backend"
   },
   "keywords": [
     "node",
@@ -25,9 +25,9 @@
   "author": "Preston Wallace",
   "license": "MIT",
   "bugs": {
-    "url": "git+"
+    "url": "git+https://github.com/rjenkins1029/sexywheels-backend"
   },
-  "homepage": "git+",
+  "homepage": "git+https://github.com/rjenkins1029/sexywheels-backend",
   "devDependencies": {
     "eslint": "^8.2.0",
     "eslint-plugin-jest": "^25.2.4",
