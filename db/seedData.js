@@ -468,4 +468,4 @@ const testDB = async () => {
   }
 };
 
-module.exports = { rebuildDB, testDB, dropTables, buildTables };
+module.exports = { rebuildDB, dropTables, buildTables };
