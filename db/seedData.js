@@ -2,7 +2,7 @@ const client = require('./client');
 
 const { createUser, getAllUsers, updateUser } = require('./users');
 const { createCar, updateCar, getAllCars } = require('./cars');
-//const { createCart, addCarToCart, getCarsInCart, getCart, deleteCartItem, deleteCart, updateCart } = require('./carts');
+// const { createCart, addCarToCart, getCarsInCart, getCart, deleteCartItem, deleteCart, updateCart } = require('./carts');
 const {
   createProduct,
   updateProduct,
@@ -105,7 +105,7 @@ const createInitialUsers = async () => {
         firstName: 'Richard',
         lastName: 'Jenkins',
         email: 'richardj@gmail.com',
-        profilePicture: 'https://imgur.com/V4RclNb.jpg',
+        profilePicture: 'https:imgur.com/V4RclNb.jpg',
       },
       {
         username: 'Cecilia',
@@ -114,7 +114,7 @@ const createInitialUsers = async () => {
         firstName: 'Cecilia',
         lastName: 'Jenkins',
         email: 'ceciliaj@gmail.com',
-        profilePicture: 'https://imgur.com/V4RclNb.jpg',
+        profilePicture: 'https:imgur.com/V4RclNb.jpg',
       },
       {
         username: 'Hang',
@@ -123,7 +123,7 @@ const createInitialUsers = async () => {
         firstName: 'Hang',
         lastName: 'Yang',
         email: 'hangy@gmail.com',
-        profilePicture: 'https://imgur.com/V4RclNb.jpg',
+        profilePicture: 'https:imgur.com/V4RclNb.jpg',
       },
       {
         username: 'Michael',
@@ -132,7 +132,7 @@ const createInitialUsers = async () => {
         firstName: 'Michael',
         lastName: 'Pascuzzi',
         email: 'michaelp@gmail.com',
-        profilePicture: 'https://imgur.com/V4RclNb.jpg',
+        profilePicture: 'https:imgur.com/V4RclNb.jpg',
       },
       {
         username: 'Elijah',
@@ -141,7 +141,7 @@ const createInitialUsers = async () => {
         firstName: 'Elijah',
         lastName: 'Hensel',
         email: 'elijahh@gmail.com',
-        profilePicture: 'https://imgur.com/V4RclNb.jpg',
+        profilePicture: 'https:imgur.com/V4RclNb.jpg',
       },
       {
         username: 'Murphy',
@@ -150,7 +150,7 @@ const createInitialUsers = async () => {
         firstName: 'Murphy',
         lastName: 'Smurphy',
         email: 'murphs@gmail.com',
-        profilePicture: 'https://imgur.com/V4RclNb.jpg',
+        profilePicture: 'https:imgur.com/V4RclNb.jpg',
       },
       {
         username: 'Stannie',
@@ -159,7 +159,7 @@ const createInitialUsers = async () => {
         firstName: 'Stannie',
         lastName: 'Jodan',
         email: 'stanniej@gmail.com',
-        profilePicture: 'https://imgur.com/V4RclNb.jpg',
+        profilePicture: 'https:imgur.com/V4RclNb.jpg',
       },
     ];
 
@@ -170,7 +170,7 @@ const createInitialUsers = async () => {
     }
 
     console.log('Users created:');
-    // console.log(users);
+     console.log(users);
     console.log('Finished creating users!');
   } catch (error) {
     console.log('Error creating initial users');
@@ -198,7 +198,7 @@ const createInitialCars = async () => {
       cars.push(await createCar(car));
     }
     console.log('Cars created:');
-    // console.log(cars);
+     console.log(cars);
     console.log('Finished creating cars!');
   } catch (error) {
     console.log('Error creating initial cars');
@@ -218,7 +218,7 @@ const createInitialProducts = async () => {
         Ability to carry and transport sand.A creative way to encourage hand-eye coordination and fine motor development. r and can run fast on street`,
         carId: 1,
         price: 30.00,
-        image: 'https://hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=2013_X1662_Cadillac_Sixteen.jpg',
+        image: 'https:hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=2013_X1662_Cadillac_Sixteen.jpg',
       },
       {
         name: 'HW Rescue Model Truck',
@@ -227,7 +227,7 @@ const createInitialProducts = async () => {
         Ability to carry and transport sand.A creative way to encourage hand-eye coordination and fine motor development. r and can run fast on street`,
         carId: 2,
         price: 70.00,
-        image: 'https://hotwheels.fandom.com/wiki/HW_Rescue_Series_(2013)?file=5_Alarm-2013_011_Rescue.jpg',
+        image: 'https:hotwheels.fandom.com/wiki/HW_Rescue_Series_(2013)?file=5_Alarm-2013_011_Rescue.jpg',
       },
       {
         name: 'Night Burnerz Model Car',
@@ -236,7 +236,7 @@ const createInitialProducts = async () => {
         Ability to carry and transport sand.A creative way to encourage hand-eye coordination and fine motor development. r and can run fast on street`,
         CarId: 3,
         price: 60.00,
-        image: 'https://hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=IMG04104-20121120-1352.jpg',
+        image: 'https:hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=IMG04104-20121120-1352.jpg',
       },
       {
         name: 'Graffiti Rides Model Truck',
@@ -245,7 +245,7 @@ const createInitialProducts = async () => {
         Ability to carry and transport sand.A creative way to encourage hand-eye coordination and fine motor development. r and can run fast on street`,
         carId: 4,
         price: 50.15,
-        image: 'https://hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=2013_yellow_Olds_442_W-30_raised.jpg',
+        image: 'https:hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=2013_yellow_Olds_442_W-30_raised.jpg',
       },
       {
         name: 'HW City Works Model Truck',
@@ -254,7 +254,7 @@ const createInitialProducts = async () => {
         Ability to carry and transport sand.A creative way to encourage hand-eye coordination and fine motor development. r and can run fast on street`,
         carId: 5,
         price: 45.12,
-        image: 'https://hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=Repo_Duty-2013_050_HW_City.NM.jpg',
+        image: 'https:hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=Repo_Duty-2013_050_HW_City.NM.jpg',
       },
       {
         name: 'Street Pest Model Car',
@@ -263,7 +263,7 @@ const createInitialProducts = async () => {
         Ability to carry and transport sand.A creative way to encourage hand-eye coordination and fine motor development. r and can run fast on street`,
         carId: 6,
         price: 40.05,
-        image: 'https://hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=Arachnorod_1_side.jpg',
+        image: 'https:hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=Arachnorod_1_side.jpg',
       },
       {
         name: 'Future Fleet Model Car',
@@ -272,7 +272,7 @@ const createInitialProducts = async () => {
         Ability to carry and transport sand.A creative way to encourage hand-eye coordination and fine motor development. r and can run fast on street`,
         carId: 8,
         price: 50.38,
-        image: 'https://hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=Max_Steel_Motorcycle-2013_59_%2528New_Models%2529.jpg',
+        image: 'https:hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=Max_Steel_Motorcycle-2013_59_%2528New_Models%2529.jpg',
       },
       {
         name: 'Batman Model Car',
@@ -281,7 +281,7 @@ const createInitialProducts = async () => {
         Ability to carry and transport sand.A creative way to encourage hand-eye coordination and fine motor development. r and can run fast on street`,
         carId: 7,
         price: 49.99,
-        image: 'https://hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=Batman_Arkham_Asylum_Batmobile.jpg',
+        image: 'https:hotwheels.fandom.com/wiki/List_of_2013_Hot_Wheels?file=Batman_Arkham_Asylum_Batmobile.jpg',
       },
     ];
 
@@ -318,7 +318,7 @@ const createInitialOrders = async () => {
     }
     console.log('Orders created:');
   
-  //  console.log(orders);
+    console.log(orders);
     console.log('Finished creating orders!');
   } catch (error) {
     console.log('Error creating initial orders');
@@ -387,7 +387,7 @@ const createInitialOrderProducts = async () => {
 
     console.log('Order products created:');
   
-  //  console.log(orderProducts);
+    console.log(orderProducts);
     console.log('Finished creating order products');
   } catch (error) {
     console.log('Error creating order products');

@@ -9,7 +9,7 @@ const {
   getUserById,
   updateUser,
   deleteUser,
-} = require('../db/models/users.js');
+} = require('../db/users.js');
 const { checkAuthorization } = require("./utils");
 usersRouter.post('/login', async (req, res, next) => {
   const { email, password } = req.body;

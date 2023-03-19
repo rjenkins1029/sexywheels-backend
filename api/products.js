@@ -8,7 +8,7 @@ const {
   createCar,
   updateCar,
   deleteCar,
-} = require('../db/models/cars.js');
+} = require('../db/cars.js');
 // const {
 //   getProductByName,
 //   getMostRecentProducts,

@@ -3,7 +3,7 @@ const productUnitsRouter = express.Router();
 const {
   createProduct,
   deleteProduct,
-} = require('../db/models/products');
+} = require('../db/products');
 
 
 productUnitsRouter.post('/', async (req, res, next) => {

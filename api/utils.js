@@ -3,7 +3,7 @@ const express = require('express');
 
 const jwt = require('jsonwebtoken');
 
-const { getUserById } = require('../db/models');
+const { getUserById } = require('../db/users');
 const { JWT_SECRET, JWT_SECRET_ADMIN } = process.env;
 
 const checkAuthorization = async (req, res, next) => {

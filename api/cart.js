@@ -8,7 +8,7 @@ const { getActiveCarts,
     deleteCart,
     getActiveCartByUser,
     getCartWithCars,
-    deleteCartItem } = require('../db/models/carts')
+    deleteCartItem } = require('../db/carts')
 const { checkAuthorization } = require("./utils");
 
 // addCarToCart,

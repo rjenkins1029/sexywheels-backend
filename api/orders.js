@@ -5,7 +5,7 @@ const {
   getAllOrders,
   getOpenOrderByUserId,
   getOrderById,
-} = require('./../db/models/orders');
+} = require('./../db/orders');
 
 
 //   getOrdersWithoutProducts,

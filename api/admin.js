@@ -23,7 +23,7 @@ const {
     deleteInactiveUser,
     deleteCarFromCategory,
     deleteCategory
-} = require('../db/models');
+} = require('../db');
 const { checkAdmin } = require("./utils");
 
 adminRouter.get('/users/:userId', checkAdmin, async (req, res, next) => {

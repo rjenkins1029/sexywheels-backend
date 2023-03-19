@@ -1,6 +1,6 @@
 const express = require("express");
 const categoriesRouter = express.Router();
-const { getAllCars, getCarById, getAllCategories, getCarsByCategory } = require('../db/models');
+const { getAllCategories, getCarsByCategory } = require('../db/category');
 
 
 categoriesRouter.get('/categories', async (req, res, next) => {
