@@ -4,13 +4,12 @@ const apiRouter = express.Router();
 
 
 
-router.get('/health', async (req, res, next) => {
-  try {
-      res.send({ message: "All is well" });
-  } catch (error) {
-      next(error);
-  }
+apiRouter.get('/health', (req, res, next) => {
+  res.send({
+    healthy: true,
+  });
 });
+
 
 
 
@@ -50,7 +49,7 @@ router.use((req, res, next) => {
       name: 'PageNotFoundError',
       message: 'Page not found'
   })
-})
+});
 
 
 module.exports = apiRouter;
