@@ -1,24 +1,11 @@
 
-const express = require('express');
+const express = require("express");
 const usersRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET, JWT_SECRET_ADMIN } = process.env;
-const {
-  getAllUsers,
-  createUser,
-  getUserByEmail,
-  getUserByUsername,
-  getUserById,
-  updateUser,
-  deleteUser,
-  getUser,
-  getResetUserById,
-  getInactiveUserById,
-  getAdminById,
-  updateBillingAddress,
-  updateShippingAddress
-} = require('../db/users.js');
+const { createUser, getUser, updateUser, getUserByEmail, getUserById, getResetUserById, deleteResetUser, getAdminById, getInactiveUserById, updateShippingAddress, updateBillingAddress } = require('../db/users');
 const { checkAuthorization } = require("./utils");
+
 usersRouter.post('/register', async (req, res, next) => {
   const {
       firstName,
@@ -78,8 +65,7 @@ usersRouter.post('/register', async (req, res, next) => {
   } 
 });
 
-// POST /api/users/login
-// Logs in a user
+
 usersRouter.post('/login', async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -139,8 +125,7 @@ usersRouter.post('/login', async (req, res, next) => {
   } 
 });
 
-// DELETE /api/users/password_reset/:userId
-// Removes user from the reset_users table and updates their password
+
 usersRouter.delete('/password_reset/:userId', async (req, res, next) => {
   try {
       const { password } = req.body;
@@ -180,8 +165,7 @@ usersRouter.delete('/password_reset/:userId', async (req, res, next) => {
   } 
 })
 
-// GET /api/users/me
-// Gets a logged in user's info
+
 usersRouter.get('/me', checkAuthorization, async (req, res, next) => {
   try {
       res.send(req.user);
@@ -190,8 +174,7 @@ usersRouter.get('/me', checkAuthorization, async (req, res, next) => {
   } 
 })
 
-// PATCH /api/users/me
-// Edits a logged in user's info
+
 usersRouter.patch('/me', checkAuthorization, async (req, res, next) => {
   try {
       const { id: userId } = req.user;

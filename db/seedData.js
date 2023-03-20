@@ -163,20 +163,15 @@ const createInitialUsers = async () => {
       },
     ];
 
-    const users = [];
-
-    for (const user of usersToCreate) {
-      users.push(await createUser(user));
-    }
-
-    console.log('Users created:');
-     console.log(users);
-    console.log('Finished creating users!');
-  } catch (error) {
-    console.log('Error creating initial users');
-    throw error;
-  }
-};
+    const users = await Promise.all(usersToCreate.map(createUser))
+    
+    console.log("Users created: ", users)
+    console.log("Finished creating users!")
+} catch (error) {
+    console.error("Error creating users!")
+    throw error
+}
+}
 
 const createInitialCars = async () => {
   console.log('Creating initial cars...');
