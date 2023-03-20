@@ -3,9 +3,19 @@ const express = require("express");
 const usersRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET, JWT_SECRET_ADMIN } = process.env;
-const { createUser, getUser, updateUser, getUserByEmail, getUserById, getResetUserById, deleteResetUser, getAdminById, getInactiveUserById, updateShippingAddress, updateBillingAddress } = require('../db/users');
+const { createUser, getUser, updateUser, getUserByEmail, getUserById, getResetUserById, deleteResetUser, getAdminById, getInactiveUserById, updateShippingAddress, updateBillingAddress, getAllUsers } = require('../db/users');
 const { checkAuthorization } = require("./utils");
 
+
+usersRouter.get('/', async (req, res, next) => {
+  try {
+    const result = await getAllUsers();
+
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
+});
 usersRouter.post('/register', async (req, res, next) => {
   const {
       firstName,

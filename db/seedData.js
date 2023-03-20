@@ -97,6 +97,7 @@ const createInitialUsers = async () => {
   console.log('Creating users...');
 
   try {
+    await getAllUsers();
     const usersToCreate = [
       {
         username: 'Richard',
@@ -176,6 +177,7 @@ const createInitialUsers = async () => {
 const createInitialCars = async () => {
   console.log('Creating initial cars...');
   try {
+    await getAllCars();
     const carsToCreate = [
       { name: 'Street Power' },
       { name: 'HW Rescue' },
