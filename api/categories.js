@@ -1,6 +1,7 @@
 const express = require("express");
 const categoriesRouter = express.Router();
 const { getAllCategories, getCarsByCategory } = require('../db/category');
+const { getAllProducts } = require('../db/products')
 
 
 categoriesRouter.get('/categories', async (req, res, next) => {
@@ -50,7 +51,7 @@ categoriesRouter.get('/:carId', async (req, res, next) => {
 
 categoriesRouter.get('/', async (req, res, next) => {
     try {
-        const cars = await getAllCars();
+        const cars = await getAllProducts();
         res.send(cars);
     } catch ({ error, name, message }) {
         next({ error, name, message });
