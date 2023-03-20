@@ -1,6 +1,8 @@
 
-const express = require('express');
+const express = require("express");
 const usersRouter = express.Router();
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET, JWT_SECRET_ADMIN } = process.env;
 const {
   getAllUsers,
   createUser,
@@ -72,13 +74,7 @@ usersRouter.post('/login', async (req, res, next) => {
     next({ error, name, message });
   } 
 });
-usersRouter.get('/me', checkAuthorization, async (req, res, next) => {
-  try {
-      res.send(req.user);
-  } catch ({ error, name, message }) {
-      next({ error, name, message });
-  } 
-})
+
 usersRouter.get('/', async (req, res) => {
   const user = verifyJWT(req.headers.authorization);
 
@@ -95,17 +91,7 @@ usersRouter.get('/', async (req, res) => {
   res.send(':P');
 });
 
-usersRouter.get('/whoami', (req, res) => {
-  if (req.user) {
-    res.send({
-      user: req.user,
-    });
-  } else {
-    res.status(401).send({
-      message: 'You are not a signed in or authenticated user.',
-    });
-  }
-});
+
 
 usersRouter.get('/admin', (req, res) => {
   const user = verifyJWT(req.headers.authorization);
@@ -118,54 +104,71 @@ usersRouter.get('/admin', (req, res) => {
 });
 
 usersRouter.post('/register', async (req, res, next) => {
-  if (Object.keys(req.body).length < 3) {
-    return res.status(400).send({
-      name: 'CredentialsRequired',
-      message: 'Please provide email, username and password to register.',
-    });
-  }
-
-  const { username, password, email } = req.body;
+  const {
+      firstName,
+      lastName,
+      password,
+      phone,
+      email,
+      shippingAddress,
+      billingAddress
+  } = req.body;
 
   try {
-    const existingUserByEmail = await getUserByEmail(email);
-    const existingUserUsername = await getUserByUsername(username);
+    const _user = await getUserByEmail(email);
 
-    if (existingUserByEmail) {
-      return res.status(400).send({
-        name: 'EmailExistsError',
-        message: 'A user under that email already exists.',
+    if (_user) {
+      res.status(403);
+      next({
+          error: '403',
+          name: 'EmailInUseError',
+          message: `${email} is already registered.`
       });
     }
 
-    if (existingUserUsername) {
-      return res.status(400).send({
-        name: 'UserExistsError',
-        message: 'A user under that username already exists.',
-      });
+    if (password.length < 8) {
+      res.status(400);
+      next({
+          error: '400',
+          name: 'PasswordTooShortError',
+          message: 'Password too short!'
+      })
     }
 
-    if (password.length < 5 || !password) {
-      return res
-        .status(406)
-        .send({ message: 'Password must be at least 5 characters long' });
-    }
-
-    const user = await createUser({ username, password, email });
-
-    const token = createJWT(user.email, user.id, user.username);
-
-    res.send({
-      user: { id: user.id, username: user.username },
-      message: 'Thank you for signing up',
-      token,
+    const user = await createUser({
+      firstName,
+      lastName,
+      password,
+      phone,
+      email,
+      shippingAddress,
+      billingAddress
     });
-  } catch (error) {
-    console.log(error);
-  }
+
+    const token = jwt.sign({ 
+      id: user.id, 
+      email
+    }, process.env.JWT_SECRET, {
+      expiresIn: '1w'
+    });
+
+    res.send({ 
+      message: "you're signed up!",
+      token,
+      user 
+    });
+  } catch ({ error, name, message }) {
+    next({ error, name, message });
+  } 
 });
 
-
+usersRouter.get('/me', checkAuthorization, async (req, res, next) => {
+  try {
+      res.send(req.user);
+  } catch ({ error, name, message }) {
+      next({ error, name, message });
+  } 
+})
 
 usersRouter.patch('/:id', (req, res) => {
   const { id } = req.params;
