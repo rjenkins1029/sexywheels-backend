@@ -60,6 +60,19 @@ async function getUser({
     console.error(error)
   }
 }
+async function getAdminById(userId) {
+  try{
+      const { rows: [admin] } = await client.query(`
+          SELECT *
+          FROM admins
+          WHERE "userId"=${userId}
+      `)
+
+      return admin;
+  } catch (error) {
+      console.error(error)
+  }
+}
 
 async function getResetUserById(userId) {
   try{
@@ -272,6 +285,7 @@ module.exports = {
   getResetUserById,
   deleteResetUser,
   createResetUser,
-  getInactiveUserById
+  getInactiveUserById,
+  getAdminById
 
 };
