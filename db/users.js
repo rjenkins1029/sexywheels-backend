@@ -40,53 +40,53 @@ const createUser = async ({
     throw error;
   }
 };
-async function getUser({ 
+async function getUser({
   email,
   password
 }) {
-  try{
+  try {
     const user = await getUserByEmail(email);
     const hashedPassword = user.password;
-    
-    let passwordsMatch = await bcrypt.compare(password, hashedPassword) 
-      if (passwordsMatch) {
-        delete user.password;
-        const userWithData = await attachUserData(user);
-        return userWithData;
-      } else {
-        return false;
+
+    let passwordsMatch = await bcrypt.compare(password, hashedPassword)
+    if (passwordsMatch) {
+      delete user.password;
+      const userWithData = await attachUserData(user);
+      return userWithData;
+    } else {
+      return false;
     }
   } catch (error) {
     console.error(error)
   }
 }
 async function getAdminById(userId) {
-  try{
-      const { rows: [admin] } = await client.query(`
+  try {
+    const { rows: [admin] } = await client.query(`
           SELECT *
           FROM admins
           WHERE "userId"=${userId}
       `)
 
-      return admin;
+    return admin;
   } catch (error) {
-      console.error(error)
+    console.error(error)
   }
 }
 
 async function getResetUserById(userId) {
-  try{
-      const { rows: [ user ] } = await client.query(`
+  try {
+    const { rows: [user] } = await client.query(`
           SELECT * 
           FROM reset_users
-          WHERE "userId"=${ userId };
+          WHERE "userId"=${userId};
       `);
 
-      if (user) {
-          return true;
-      } else {
-          return false;
-      }
+    if (user) {
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error)
   }
@@ -207,71 +207,160 @@ const deleteUser = async id => {
   }
 };
 async function deleteResetUser(userId, password) {
-  try{
-      const { rows: [ user ] } = await client.query(`
+  try {
+    const { rows: [user] } = await client.query(`
       SELECT *
       FROM users
       WHERE id=$1
       `, [userId])
 
-      const hashedPassword = user.password;
+    const hashedPassword = user.password;
 
-      let passwordsMatch = await bcrypt.compare(password, hashedPassword) 
-      if (!passwordsMatch) {
-          
-          const newHashedPassword = await bcrypt.hash(password, SALT_COUNT);
-          const { rows: [ reset_user ] } = await client.query(`
+    let passwordsMatch = await bcrypt.compare(password, hashedPassword)
+    if (!passwordsMatch) {
+
+      const newHashedPassword = await bcrypt.hash(password, SALT_COUNT);
+      const { rows: [reset_user] } = await client.query(`
               DELETE FROM reset_users
               WHERE "userId"=$1
               RETURNING *;
           `, [userId])
-  
-          const { rows: [ updatedUser ]} = await client.query(`
+
+      const { rows: [updatedUser] } = await client.query(`
               UPDATE users
               SET "password"=$1
               WHERE id=$2
               RETURNING *;
-          `, [ newHashedPassword, userId ])
-  
-          delete updatedUser.password;
-  
-          return updatedUser;
-      } else {
-          return false;
-      }
+          `, [newHashedPassword, userId])
+
+      delete updatedUser.password;
+
+      return updatedUser;
+    } else {
+      return false;
+    }
   } catch (error) {
-      console.error(error)
+    console.error(error)
   }
 }
 async function createResetUser(userId) {
-  try{
-      const { rows: [reset_user] } = await client.query(`
+  try {
+    const { rows: [reset_user] } = await client.query(`
           INSERT INTO reset_users("userId")
           VALUES ($1)
           RETURNING *;
       `, [userId])
 
-      return reset_user;
-  } catch (error) {
-      console.error(error)
-  }
-}
-async function getInactiveUserById(userId) {
-  try{
-      const { rows: [ user ] } = await client.query(`
-          SELECT * 
-          FROM inactive_users
-          WHERE "userId"=${ userId };
-      `);
-
-      if (user) {
-          return true;
-      } else {
-          return false;
-      }
+    return reset_user;
   } catch (error) {
     console.error(error)
   }
+}
+async function getInactiveUserById(userId) {
+  try {
+    const { rows: [user] } = await client.query(`
+          SELECT * 
+          FROM inactive_users
+          WHERE "userId"=${userId};
+      `);
+
+    if (user) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function addShippingAddress({
+  userId,
+  address,
+  city,
+  state,
+  zip
+}) {
+  try {
+    const { rows: [shipping_address] } = await client.query(`
+          INSERT INTO shipping_addresses("userId", address, city, state, zip)
+          VALUES ($1, $2, $3, $4, $5)   
+          ON CONFLICT ("userId") DO NOTHING     
+          RETURNING *;
+      `, [userId, address, city, state, zip])
+
+    return shipping_address;
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function addBillingAddress({
+  userId,
+  address,
+  city,
+  state,
+  zip
+}) {
+  try {
+    const { rows: [billing_address] } = await client.query(`
+          INSERT INTO billing_addresses("userId", address, city, state, zip)
+          VALUES ($1, $2, $3, $4, $5)  
+          ON CONFLICT ("userId") DO NOTHING      
+          RETURNING *;
+      `, [userId, address, city, state, zip])
+
+    return billing_address;
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function updateShippingAddress(userId, shippingAddress) {
+  try {
+    const setString = Object.keys(shippingAddress).map(
+      (key, index) => `"${key}"=$${index + 1}`
+    ).join(', ');
+
+    if (setString.length === 0) {
+      return;
+    }
+
+    const { rows: [updatedShippingAddress] } = await client.query(`
+          UPDATE shipping_addresses
+          SET ${setString}
+          WHERE "userId"=${userId}
+          RETURNING *;
+      `, Object.values(shippingAddress));
+    return updatedShippingAddress;
+  } catch (error) {
+    console.error(error)
+  }
+
+}
+
+async function updateBillingAddress(userId, billingAddress) {
+  try {
+    const setString = Object.keys(billingAddress).map(
+      (key, index) => `"${key}"=$${index + 1}`
+    ).join(', ');
+
+    if (setString.length === 0) {
+      return;
+    }
+
+    const { rows: [updatedBillingAddress] } = await client.query(`
+          UPDATE billing_addresses
+          SET ${setString}
+          WHERE "userId"=${userId}
+          RETURNING *;
+      `, Object.values(billingAddress));
+
+    return updatedBillingAddress;
+  } catch (error) {
+    console.error(error)
+  }
+
 }
 module.exports = {
   createUser,
@@ -286,6 +375,10 @@ module.exports = {
   deleteResetUser,
   createResetUser,
   getInactiveUserById,
-  getAdminById
+  getAdminById,
+  addShippingAddress,
+  addBillingAddress,
+  updateBillingAddress,
+  updateShippingAddress
 
 };

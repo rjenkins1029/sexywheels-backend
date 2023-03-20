@@ -14,67 +14,11 @@ const {
   getUser,
   getResetUserById,
   getInactiveUserById,
-  getAdminById
+  getAdminById,
+  updateBillingAddress,
+  updateShippingAddress
 } = require('../db/users.js');
 const { checkAuthorization } = require("./utils");
-usersRouter.post('/login', async (req, res, next) => {
-  const { email, password } = req.body;
-
-  try {
-      const user = await getUser({ email, password });
-      
-      if (!user) {
-          res.status(400);
-          next({
-              error: '400',
-              name: 'IncorrectCredentialsError',
-              message: 'Incorrect email or password'
-          });
-      }
-      
-      const resetUser = await getResetUserById(user.id);
-      const inactiveUser = await getInactiveUserById(user.id);
-
-      if (inactiveUser) {
-          res.send({
-              message: "Your account has been deactivated",
-              userId: user.id,
-              status: "inactive"
-          });
-      }
-
-      if (resetUser) {
-          res.send({
-              message: "Please reset your password",
-              userId: user.id,
-              needsReset: true
-          });
-      }
-
-
-      const token = jwt.sign({ id: user.id, email }, JWT_SECRET);
-      const admin = await getAdminById(user.id);
-
-      if(admin) {
-          const adminToken = jwt.sign({ id: user.id, email }, JWT_SECRET_ADMIN);
-          res.send({
-              message: "you're logged in!",
-              token,
-              adminToken,
-              user
-          });
-      } else {
-          res.send({ 
-          message: "you're logged in!",
-          token,
-          user 
-          });
-      }
-      
-  } catch ({ error, name, message }) {
-    next({ error, name, message });
-  } 
-});
 usersRouter.post('/register', async (req, res, next) => {
   const {
       firstName,
@@ -134,6 +78,110 @@ usersRouter.post('/register', async (req, res, next) => {
   } 
 });
 
+// POST /api/users/login
+// Logs in a user
+usersRouter.post('/login', async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+      const user = await getUser({ email, password });
+      
+      if (!user) {
+          res.status(400);
+          next({
+              error: '400',
+              name: 'IncorrectCredentialsError',
+              message: 'Incorrect email or password'
+          });
+      }
+      
+      const resetUser = await getResetUserById(user.id);
+      const inactiveUser = await getInactiveUserById(user.id);
+
+      if (inactiveUser) {
+          res.send({
+              message: "Your account has been deactivated",
+              userId: user.id,
+              status: "inactive"
+          });
+      }
+
+      if (resetUser) {
+          res.send({
+              message: "Please reset your password",
+              userId: user.id,
+              needsReset: true
+          });
+      }
+
+
+      const token = jwt.sign({ id: user.id, email }, JWT_SECRET);
+      const admin = await getAdminById(user.id);
+
+      if(admin) {
+          const adminToken = jwt.sign({ id: user.id, email }, JWT_SECRET_ADMIN);
+          res.send({
+              message: "you're logged in!",
+              token,
+              adminToken,
+              user
+          });
+      } else {
+          res.send({ 
+          message: "you're logged in!",
+          token,
+          user 
+          });
+      }
+      
+  } catch ({ error, name, message }) {
+    next({ error, name, message });
+  } 
+});
+
+// DELETE /api/users/password_reset/:userId
+// Removes user from the reset_users table and updates their password
+usersRouter.delete('/password_reset/:userId', async (req, res, next) => {
+  try {
+      const { password } = req.body;
+      const { userId } = req.params;
+
+      const user = await deleteResetUser(userId, password);
+
+      if (!user) {
+          res.status(400);
+          next({
+              error: '400',
+              name: 'SamePasswordError',
+              message: 'New password must be different'
+          });
+      } else {
+          const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET);
+          const admin = await getAdminById(user.id);
+
+          if(admin) {
+              const adminToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET_ADMIN);
+              res.send({
+                  message: "you're logged in!",
+                  token,
+                  adminToken,
+                  user
+              });
+          } else {
+              res.send({ 
+              message: "you're logged in!",
+              token,
+              user 
+              });
+          }
+      }
+  } catch ({ error, name, message }) {
+      next({ error, name, message });
+  } 
+})
+
+// GET /api/users/me
+// Gets a logged in user's info
 usersRouter.get('/me', checkAuthorization, async (req, res, next) => {
   try {
       res.send(req.user);
@@ -142,56 +190,15 @@ usersRouter.get('/me', checkAuthorization, async (req, res, next) => {
   } 
 })
 
-usersRouter.patch('/:id', (req, res) => {
-  const { id } = req.params;
-  const user = verifyJWT(req.headers.authorization);
-
-  if (!user.isAdmin) {
-    return res.send(':P');
-  }
-
-  const { username, email, isadmin } = req.body;
-
-  const userObj = { username, email, isadmin };
-
-  // Input validation for setString, psql should recieve no empty keys
-  Object.keys(userObj).forEach((key) => {
-    if (userObj[key] === undefined) {
-      delete userObj[key];
-    }
-  });
-
-  try {
-    const result = updateUser(id, userObj);
-
-    res.send(result);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-usersRouter.delete('/:id', async (req, res) => {
-  const user = verifyJWT(req.headers.authorization);
-
-  if (!user.isAdmin) {
-    return res.send(':P');
-  }
-
-  const { id } = req.params;
-
-  try {
-    const result = await deleteUser(id);
-
-    res.send(result);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
+// PATCH /api/users/me
+// Edits a logged in user's info
 usersRouter.patch('/me', checkAuthorization, async (req, res, next) => {
   try {
-      const { id: userId } = req.user
-      const { ...fields } = req.body;
+      const { id: userId } = req.user;
+      const userInfo = { ...req.body };
+
+      delete userInfo.shippingAddress;
+      delete userInfo.billingAddress;
 
       const user = await getUserById(userId);
 
@@ -205,7 +212,7 @@ usersRouter.patch('/me', checkAuthorization, async (req, res, next) => {
       } else if (req.body.email) {
           const userByEmail = await getUserByEmail(req.body.email);
 
-          if (userByEmail.id && userByEmail.id !== userId) {
+          if (userByEmail && userByEmail.id !== userId) {
               res.status(400);
               next({
                   error: '400',
@@ -213,9 +220,15 @@ usersRouter.patch('/me', checkAuthorization, async (req, res, next) => {
                   message: 'That email is already in use'
               })
           } else {
-              const updatedUser = await updateUser({ userId, ...fields });
+              if (req.body.shippingAddress) {
+                  await updateShippingAddress(userId, req.body.shippingAddress);
+              }
+              if (req.body.billingAddress) {
+                  await updateBillingAddress(userId, req.body.billingAddress);
+              }
+              const updatedUser = await updateUser({ id: userId, ...userInfo });
   
-              if (!updatedUser.id) {
+              if (!updatedUser) {
                   next({
                       error: '400',
                       name: 'UserUpdateError',
@@ -226,9 +239,15 @@ usersRouter.patch('/me', checkAuthorization, async (req, res, next) => {
               }
           }
       } else {
-          const updatedUser = await updateUser({ userId, ...fields });
+          if (req.body.shippingAddress) {
+              await updateShippingAddress(userId, req.body.shippingAddress);
+          }
+          if (req.body.billingAddress) {
+              await updateBillingAddress(userId, req.body.billingAddress);
+          }
+          const updatedUser = await updateUser({ id: userId, ...userInfo });
 
-          if (!updatedUser.id) {
+          if (!updatedUser) {
               res.status(400);
               next({
                   error: '400',
