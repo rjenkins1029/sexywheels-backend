@@ -75,35 +75,6 @@ usersRouter.post('/login', async (req, res, next) => {
     next({ error, name, message });
   } 
 });
-
-usersRouter.get('/', async (req, res) => {
-  const user = verifyJWT(req.headers.authorization);
-
-  if (user.isAdmin) {
-    try {
-      const users = await getAllUsers();
-
-      return res.send({ users });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  res.send(':P');
-});
-
-
-
-usersRouter.get('/admin', (req, res) => {
-  const user = verifyJWT(req.headers.authorization);
-
-  if (user.isAdmin) {
-    return res.send(true);
-  }
-
-  res.send(false);
-});
-
 usersRouter.post('/register', async (req, res, next) => {
   const {
       firstName,
