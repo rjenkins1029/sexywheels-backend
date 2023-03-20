@@ -1,18 +1,16 @@
-const apiRouter = require('express').Router();
+const express = require('express');
+const apiRouter = express.Router();
 
 
-apiRouter.get('/', (req, res, next) => {
-  res.send({
-    message: 'API is under construction!',
-  });
+
+
+router.get('/health', async (req, res, next) => {
+  try {
+      res.send({ message: "All is well" });
+  } catch (error) {
+      next(error);
+  }
 });
-
-apiRouter.get('/health', (req, res, next) => {
-  res.send({
-    healthy: true,
-  });
-});
-
 
 
 
@@ -38,7 +36,21 @@ apiRouter.use('/orders', ordersRouter);
 const categoriesRouter = require('./categories')
 apiRouter.use('/categories', categoriesRouter);
 
+router.use((error, req, res, next) => {
+  res.send({
+      error: error.error,
+      name: error.name,
+      message: error.message
+  });
+});
 
+router.use((req, res, next) => {
+  res.status(404).send({
+      error: '404',
+      name: 'PageNotFoundError',
+      message: 'Page not found'
+  })
+})
 
 
 module.exports = apiRouter;
