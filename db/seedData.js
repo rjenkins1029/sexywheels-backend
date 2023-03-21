@@ -103,7 +103,7 @@ const createInitialUsers = async () => {
     const usersToCreate = [
       {
         username: 'Richard',
-        password: 'password',
+        password: 'hola1234',
         isAdmin: true,
         firstName: 'Richard',
         lastName: 'Jenkins',
