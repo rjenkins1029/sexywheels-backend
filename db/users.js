@@ -10,6 +10,7 @@ const createUser = async ({
   email,
   profilePicture,
 }) => {
+  console.log(username , "database")
   try {
     const SALT_COUNT = 10;
     const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
