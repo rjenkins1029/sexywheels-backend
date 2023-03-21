@@ -66,29 +66,24 @@ async function attachUserData(user) {
   try{
     const userData = { ...user };
     
-    const { rows: cartItems } = await client.query(`
+    const { rows: orderProducts } = await client.query(`
         SELECT *
-        FROM cart_items
+        FROM orderproducts
         WHERE "userId"=${userData.id};
     `);
     let total = 0;
-    for (let item of cartItems) {
+    for (let item of orderProducts) {
         total += Number(item.price);
     }
     const cart = {
-        cartItems,
+        orderProducts,
         total
     }
-    const { rows: [ inactiveUser ] } = await client.query(`
-        SELECT *
-        FROM inactive_users
-        WHERE "userId"=${userData.id};
-    `);
-    const userStatus = inactiveUser ? 'inactive' : 'active';
+    
 
    
     userData.cart = cart;
-    userData.status = userStatus;
+    
 
     return userData;
   } catch (error) {
