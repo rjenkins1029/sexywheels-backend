@@ -23,19 +23,19 @@ usersRouter.post('/register', async (req, res, next) => {
       password,
       phone,
       email,
-      shippingAddress,
-      billingAddress
+      username
+      
   } = req.body;
 
   try {
-    const _user = await getUserByEmail(email);
+    const _user = await getUserByEmail(username);
 
     if (_user) {
       res.status(403);
       next({
           error: '403',
-          name: 'EmailInUseError',
-          message: `${email} is already registered.`
+          name: 'UsernameInUseError',
+          message: `${username} is already registered.`
       });
     }
 
@@ -60,7 +60,7 @@ usersRouter.post('/register', async (req, res, next) => {
 
     const token = jwt.sign({ 
       id: user.id, 
-      email
+      username
     }, process.env.JWT_SECRET, {
       expiresIn: '1w'
     });
@@ -77,17 +77,17 @@ usersRouter.post('/register', async (req, res, next) => {
 
 
 usersRouter.post('/login', async (req, res, next) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-      const user = await getUser({ email, password });
+      const user = await getUser({ username, password });
       
       if (!user) {
           res.status(400);
           next({
               error: '400',
               name: 'IncorrectCredentialsError',
-              message: 'Incorrect email or password'
+              message: 'Incorrect username or password'
           });
       }
       
