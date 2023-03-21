@@ -51,6 +51,8 @@ const buildTables = async () => {
           "profilePicture" VARCHAR(255),
           UNIQUE(username, email)
         );
+
+        
         CREATE TABLE guests (
           id SERIAL PRIMARY KEY,
           "isAdmin" BOOLEAN DEFAULT false
