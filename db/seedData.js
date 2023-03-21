@@ -25,6 +25,7 @@ const dropTables = async () => {
     DROP TABLE IF EXISTS carts;
     DROP TABLE IF EXISTS cars;        
     DROP TABLE IF EXISTS guests;
+    DROP TABLE IF EXISTS inactive_users;
     DROP TABLE IF EXISTS users;
        
     `);
@@ -67,6 +68,11 @@ const buildTables = async () => {
           active BOOLEAN DEFAULT true,
           UNIQUE ("userId", active)
         );
+        CREATE TABLE inactive_users (
+          id SERIAL PRIMARY KEY,
+          "userId" INTEGER REFERENCES users(id),
+          UNIQUE ("userId")
+      );
         CREATE TABLE products (
           id SERIAL PRIMARY KEY,
           image VARCHAR(255),
