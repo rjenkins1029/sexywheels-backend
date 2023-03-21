@@ -202,15 +202,15 @@ usersRouter.patch('/me', checkAuthorization, async (req, res, next) => {
               name: 'UserNotFoundError',
               message: 'User not found'
           })
-      } else if (req.body.email) {
-          const userByEmail = await getUserByEmail(req.body.email);
+      } else if (req.body.username) {
+          const userByUsername = await getUserByUsername(req.body.username);
 
-          if (userByEmail && userByEmail.id !== userId) {
+          if (userByUsername && userByUsername.id !== userId) {
               res.status(400);
               next({
                   error: '400',
-                  name: 'EmailInUseError',
-                  message: 'That email is already in use'
+                  name: 'UsernameInUseError',
+                  message: 'That Username is already in use'
               })
           } else {
               if (req.body.shippingAddress) {
