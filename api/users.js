@@ -54,8 +54,8 @@ usersRouter.post('/register', async (req, res, next) => {
       password,
       phone,
       email,
-      shippingAddress,
-      billingAddress
+      username
+      
     });
 
     const token = jwt.sign({ 
