@@ -52,8 +52,8 @@ async function getUser({
     let passwordsMatch = await bcrypt.compare(password, hashedPassword) 
       if (passwordsMatch) {
         delete user.password;
-        const userWithData = await attachUserData(user);
-        return userWithData;
+        
+        return user;
       } else {
         return false;
     }
@@ -62,34 +62,7 @@ async function getUser({
   }
 }
 
-async function attachUserData(user) {
-  try{
-    const userData = { ...user };
-    
-    const { rows: orderProducts } = await client.query(`
-        SELECT *
-        FROM orderproducts
-        WHERE "userId"=${userData.id};
-    `);
-    let total = 0;
-    for (let item of orderProducts) {
-        total += Number(item.price);
-    }
-    const cart = {
-        orderProducts,
-        total
-    }
-    
 
-   
-    userData.cart = cart;
-    
-
-    return userData;
-  } catch (error) {
-    console.error(error);
-  }
-}
 
 async function getAdminById(userId) {
   try {
