@@ -77,17 +77,17 @@ usersRouter.post('/register', async (req, res, next) => {
 
 
 usersRouter.post('/login', async (req, res, next) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-      const user = await getUser({ email, password });
+      const user = await getUser({ username, password });
       
       if (!user) {
           res.status(400);
           next({
               error: '400',
               name: 'IncorrectCredentialsError',
-              message: 'Incorrect email or password'
+              message: 'Incorrect username or password'
           });
       }
       

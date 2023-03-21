@@ -42,11 +42,11 @@ const createUser = async ({
   }
 };
 async function getUser({ 
-  email,
+  username,
   password
 }) {
   try{
-    const user = await getUserByEmail(email);
+    const user = await getUserByEmail(username);
     const hashedPassword = user.password;
     
     let passwordsMatch = await bcrypt.compare(password, hashedPassword) 
