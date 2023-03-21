@@ -77,17 +77,17 @@ usersRouter.post('/register', async (req, res, next) => {
 
 
 usersRouter.post('/login', async (req, res, next) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
-      const user = await getUser({ username, password });
+      const user = await getUser({ email, password });
       
       if (!user) {
           res.status(400);
           next({
               error: '400',
               name: 'IncorrectCredentialsError',
-              message: 'Incorrect username or password'
+              message: 'Incorrect email or password'
           });
       }
       
@@ -111,11 +111,11 @@ usersRouter.post('/login', async (req, res, next) => {
       }
 
 
-      const token = jwt.sign({ id: user.id, username }, JWT_SECRET);
+      const token = jwt.sign({ id: user.id, email }, JWT_SECRET);
       const admin = await getAdminById(user.id);
 
       if(admin) {
-          const adminToken = jwt.sign({ id: user.id, username }, JWT_SECRET_ADMIN);
+          const adminToken = jwt.sign({ id: user.id, email }, JWT_SECRET_ADMIN);
           res.send({
               message: "you're logged in!",
               token,
