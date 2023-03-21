@@ -111,11 +111,11 @@ usersRouter.post('/login', async (req, res, next) => {
       }
 
 
-      const token = jwt.sign({ id: user.id, email }, JWT_SECRET);
+      const token = jwt.sign({ id: user.id, username }, JWT_SECRET);
       const admin = await getAdminById(user.id);
 
       if(admin) {
-          const adminToken = jwt.sign({ id: user.id, email }, JWT_SECRET_ADMIN);
+          const adminToken = jwt.sign({ id: user.id, username }, JWT_SECRET_ADMIN);
           res.send({
               message: "you're logged in!",
               token,
