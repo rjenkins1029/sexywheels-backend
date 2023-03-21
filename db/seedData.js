@@ -165,7 +165,7 @@ const createInitialUsers = async () => {
         profilePicture: 'https:imgur.com/V4RclNb.jpg',
       },
     ];
-
+    console.log(usersToCreate, "THESE ARE THE USERES WE CREATED")
     const users = await Promise.all(usersToCreate.map(createUser))
     
     console.log("Users created: ", users)

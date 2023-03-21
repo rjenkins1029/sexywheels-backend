@@ -62,6 +62,40 @@ async function getUser({
   }
 }
 
+async function attachUserData(user) {
+  try{
+    const userData = { ...user };
+    
+    const { rows: cartItems } = await client.query(`
+        SELECT *
+        FROM cart_items
+        WHERE "userId"=${userData.id};
+    `);
+    let total = 0;
+    for (let item of cartItems) {
+        total += Number(item.price);
+    }
+    const cart = {
+        cartItems,
+        total
+    }
+    const { rows: [ inactiveUser ] } = await client.query(`
+        SELECT *
+        FROM inactive_users
+        WHERE "userId"=${userData.id};
+    `);
+    const userStatus = inactiveUser ? 'inactive' : 'active';
+
+   
+    userData.cart = cart;
+    userData.status = userStatus;
+
+    return userData;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 async function getAdminById(userId) {
   try {
     const { rows: [admin] } = await client.query(`
@@ -381,6 +415,7 @@ module.exports = {
   addShippingAddress,
   addBillingAddress,
   updateBillingAddress,
-  updateShippingAddress
+  updateShippingAddress,
+  attachUserData
 
 };
