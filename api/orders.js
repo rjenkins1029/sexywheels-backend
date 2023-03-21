@@ -14,6 +14,8 @@ const {
 //   getOrderHistoryById,
 const { checkAuthorization } = require("./utils");
 
+
+
 ordersRouter.get('/', checkAuthorization, async (req, res, next) => {
   try {
       const { orderId } = req.params;
@@ -80,6 +82,40 @@ ordersRouter.get('/details/:orderId', async (req, res) => {
     req.user.id !== order[0].userId ? res.status(403).send({ name: 'Wrong user', message: 'This order belongs to someone else.' }) : res.send(order);
 
 
+  } catch (error) {
+    console.log(error);
+  }
+});
+ordersRouter.post('/guest', async (req, res) => {
+  try {
+    const { orderItems, date } = req.body;
+
+    if (!orderItems[0]) {
+      res.status(400);
+      next({
+          error: '400',
+          name: 'EmptyCartError',
+          message: 'Your cart is empty'
+      })
+  }
+
+  const { userId, status, total } = req.body;
+
+  if (req.user.id !== userId) return res.status(403).send({ name: 'Wrong user', message: 'Please login into your account.' })
+
+  
+    const order = await createOrder({ userId: 1, status, total, date });
+
+    res.send({
+      order: {
+        id: order.id,
+        userId: order.userId,
+        status: order.status,
+        total: order.total,
+        date: order.date,
+      },
+      message: 'Your order has been received, Thank you for your purchase',
+    });
   } catch (error) {
     console.log(error);
   }
