@@ -221,5 +221,27 @@ cartsRouter.delete('/:cartItemId', checkAuthorization, async (req, res, next) =>
         next({ error, name, message });
     }
 })
+cartsRouter.patch('cars/:carId', checkAuthorization, async (req, res, next) => {
+    try {
+        const { id: userId } = req.user;
+        const { carId } = req.params;
+        const car = await getCarById(carId);
+
+        if (car.isAvailable) {
+            const cartItem = await addItemToCart({ userId, carId });
+    
+            res.send(cartItem);
+        } else {
+            res.status(404);
+            next({
+                error: '404',
+                name: 'CarNotAvailableError',
+                message: 'Car not available'
+            })
+        }
+    } catch ({ error, name, message }) {
+        next({ error, name, message });
+    }
+})
 
 module.exports = cartsRouter
