@@ -14,14 +14,14 @@ async function createCart(userId) {
   }
 }
 
-async function addCarToCart({itemId, cartId, quantity}) {
+async function addCarToCart({userId, cartId, quantity}) {
 
     try {
         const {rows: [cartItem]} = await client.query(`
-          INSERT INTO cart_items("itemId", "cartId", quantity)
-          VALUES ($1, $2, $3)
+          INSERT INTO cart_items("userId", "cartId")
+          VALUES ($1, $2)
           RETURNING *
-        ;`, [itemId, cartId, quantity])
+        ;`, [userId, cartId])
         return cartItem
     } catch (error) {
         console.error(error)

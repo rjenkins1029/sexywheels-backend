@@ -73,6 +73,12 @@ const buildTables = async () => {
           "userId" INTEGER REFERENCES users(id),
           UNIQUE ("userId")
       );
+      CREATE TABLE cart_items (
+        id SERIAL PRIMARY KEY,
+        "userId" INTEGER REFERENCES users(id),
+        "carId" INTEGER REFERENCES cars(id),
+         UNIQUE ("userId", "carId")
+    );
         CREATE TABLE products (
           id SERIAL PRIMARY KEY,
           image VARCHAR(255),
