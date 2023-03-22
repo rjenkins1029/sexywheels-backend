@@ -228,7 +228,7 @@ cartsRouter.patch('cars/:carId', checkAuthorization, async (req, res, next) => {
         const car = await getCarById(carId);
 
         if (car.isAvailable) {
-            const cartItem = await addItemToCart({ userId, carId });
+            const cartItem = await addCarToCart({ userId, carId });
     
             res.send(cartItem);
         } else {
